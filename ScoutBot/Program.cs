@@ -7,9 +7,9 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using StatBot.Services;
+using ScoutBot.Services;
 
-namespace StatBot
+namespace ScoutBot
 {
     public class Program
     {

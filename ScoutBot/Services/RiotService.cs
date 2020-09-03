@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Runtime;
 
-namespace StatBot.Services
+namespace ScoutBot.Services
 {
     public class RiotService
     {

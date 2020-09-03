@@ -7,7 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 
-namespace StatBot
+namespace ScoutBot
 {
     /// <summary>
     /// Handles command setup methods.

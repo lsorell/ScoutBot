@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using StatBot.Database.Model;
+using ScoutBot.Database.Model;
 
-namespace StatBot.Services
+namespace ScoutBot.Services
 {
     /// <summary>
     /// Context for the database.
