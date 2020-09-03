@@ -1,10 +1,10 @@
 ﻿using Discord.Commands;
 using RiotSharp;
 using RiotSharp.Misc;
-using StatBot.Services;
+using ScoutBot.Services;
 using System.Threading.Tasks;
 
-namespace StatBot.Modules
+namespace ScoutBot.Modules
 {
     /// <summary>
     /// Commands dealing with riot api can be found in this module.

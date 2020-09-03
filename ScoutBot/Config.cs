@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace StatBot
+namespace ScoutBot
 {
     /// <summary>
     /// Config object for json deserialization.

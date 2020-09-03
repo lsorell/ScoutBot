@@ -23,4 +23,4 @@ WORKDIR /app
 
 # Copy build files from build image
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "StatBot.dll"]
+ENTRYPOINT ["dotnet", "ScoutBot.dll"]

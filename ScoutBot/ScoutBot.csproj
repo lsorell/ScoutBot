@@ -64,8 +64,6 @@
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.5.4</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\RiotSharp\RiotSharp\RiotSharp.csproj" />
   </ItemGroup>
 </Project>

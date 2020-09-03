@@ -1,4 +1,4 @@
-namespace StatBot.Database.Model
+namespace ScoutBot.Database.Model
 {
     /// <summary>
     /// Model for the provider table.

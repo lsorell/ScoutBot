@@ -1,8 +1,8 @@
-﻿using StatBot.Database.Model;
+﻿using ScoutBot.Database.Model;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StatBot.Services
+namespace ScoutBot.Services
 {
     /// <summary>
     /// Handles database operations.
