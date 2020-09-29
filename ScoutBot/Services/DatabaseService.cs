@@ -15,7 +15,7 @@ namespace ScoutBot.Services
         /// <param name="sheetId">The google sheet id.</param>
         /// <param name="roleId">The discord role id.</param>
         /// <returns></returns>
-        public static async Task<bool> AddSheetAccess(string sheetId, string roleId)
+        public static async Task<bool> AddSheetAccess(string sheetId, ulong roleId, string teamName)
         {
             using (ScoutContext db = new ScoutContext())
             {
@@ -24,7 +24,8 @@ namespace ScoutBot.Services
                     await db.SheetAccess.AddAsync(new SheetAccess
                     {
                         SheetId = sheetId,
-                        RoleId = roleId
+                        RoleId = roleId,
+                        TeamName = teamName
                     });
                     db.SaveChanges();
                 }

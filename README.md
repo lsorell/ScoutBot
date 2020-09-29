@@ -15,11 +15,11 @@ ScoutBot is a discord bot that creates scout sheets, using google sheets, on opp
 
 ## Commands
 
-- [RegisterSheet](#Register-<SheetId\>-<RoleId\>)
+- [RegisterSheet](#Register-<SheetId\>-<RoleId\>-<TeamName\>)
 
 #
 
-### Register <SheetId\> <RoleId\>
+### Register <SheetId\> <RoleId\> <TeamName\>
 
 Links an existing google sheet with a RotM team name.
 
@@ -29,6 +29,7 @@ Links an existing google sheet with a RotM team name.
 | -------- | --------------------------------------------------------------------- |
 | SheetId  | The google id of the document.                                        |
 | RoleId   | The id of the role that will be allowed to access the sheet.          |
+| TeamName | The name of the team that will be using the scout sheet.              |
 
 ---
 

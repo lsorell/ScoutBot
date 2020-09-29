@@ -29,9 +29,9 @@ namespace ScoutBot.Modules
         [RequireUserPermissionAttribute(GuildPermission.Administrator)]
         [Command("Register")]
         [Summary("Links a google sheet with a discord role.")]
-        public async Task RegisterSheetAsync(string sheetId, [Remainder] string roleId)
+        public async Task RegisterSheetAsync(string sheetId, ulong roleId, [Remainder] string teamName)
         {
-            if (await DatabaseService.AddSheetAccess(sheetId, roleId))
+            if (await DatabaseService.AddSheetAccess(sheetId, roleId, teamName))
                 await ReplyAsync("Success!");
             else
                 await ReplyAsync("There was an error. The data was not saved.");

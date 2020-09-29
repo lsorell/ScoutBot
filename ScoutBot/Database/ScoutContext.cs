@@ -14,7 +14,7 @@ namespace ScoutBot.Services
         public DbSet<SheetAccess> SheetAccess { get; set; }
 
         /// <summary>
-        /// Configures database to use sqlite
+        /// Configures database to use sqlite.
         /// </summary>
         /// <param name="options"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -28,10 +28,9 @@ namespace ScoutBot.Services
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SheetAccess>().HasKey(s => new
+            modelBuilder.Entity<SheetAccess>(entity =>
             {
-                s.SheetId,
-                s.RoleId
+                entity.HasIndex(e => e.TeamName).IsUnique();
             });
         }
     }

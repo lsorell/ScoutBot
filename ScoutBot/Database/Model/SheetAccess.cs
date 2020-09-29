@@ -8,13 +8,19 @@ namespace ScoutBot.Database.Model
     public class SheetAccess
     {
         /// <summary>
+        /// The discord role id.
+        /// </summary>
+        [Key]
+        public ulong RoleId { get; set; }
+
+        /// <summary>
         /// The google sheet id.
         /// </summary>
         public string SheetId { get; set; }
 
         /// <summary>
-        /// The discord role id.
+        /// The name of the team that will be using the scout sheet.
         /// </summary>
-        public string RoleId { get; set; }
+        public string TeamName { get; set; }
     }
 }
