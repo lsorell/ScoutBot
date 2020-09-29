@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatBot", "StatBot\StatBot.csproj", "{5B398289-C14F-4E71-9AD9-B3F3583929FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScoutBot", "ScoutBot\ScoutBot.csproj", "{5B398289-C14F-4E71-9AD9-B3F3583929FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiotSharp", "RiotSharp\RiotSharp.csproj", "{7388BB2D-0A94-41A1-A9C6-81ABA109E707}"
 EndProject

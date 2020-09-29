@@ -10,3 +10,4 @@ config.json
 ScoutBot.db
 ScoutBot.db-shm
 ScoutBot.db-wal
+credentials.json

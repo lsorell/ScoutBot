@@ -43,7 +43,7 @@ namespace ScoutBot
             });
 
             // Initialize config object and config service
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "config.json");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), @"../config.json");
             JsonConvert.DeserializeObject<Config>(File.ReadAllText(path));
 
             // Subscribe the logging handler to both the client and the CommandService.
@@ -111,12 +111,6 @@ namespace ScoutBot
             // Centralize the logic for commands into a separate method.
             CommandHandler commandHandler = new CommandHandler(_client, _commands, _services);
             await commandHandler.InstallCommandsAsync();
-
-            //Create provider if none exits
-            if (!await DatabaseService.ProviderExistsAsync())
-            {
-                await DatabaseService.PutProviderAsync(await RiotService.GetProviderAsync());
-            }
 
             // Login and connect.
             await _client.LoginAsync(TokenType.Bot, Config.DiscordToken);

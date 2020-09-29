@@ -10,27 +10,30 @@ namespace ScoutBot.Services
     public class DatabaseService
     {
         /// <summary>
-        /// Adds the providerId to the database.
+        /// Adds new SheetAccess row to the table.
         /// </summary>
-        /// <param name="providerId">The id from riot for generating tournaments.</param>
-        public static async Task PutProviderAsync(int providerId)
+        /// <param name="sheetId">The google sheet id.</param>
+        /// <param name="roleId">The discord role id.</param>
+        /// <returns></returns>
+        public static async Task<bool> AddSheetAccess(string sheetId, string roleId)
         {
-            using (StatsContext db = new StatsContext())
+            using (ScoutContext db = new ScoutContext())
             {
-                await db.Providers.AddAsync(new Provider { ProviderID = providerId });
-                db.SaveChanges();
+                try
+                {
+                    await db.SheetAccess.AddAsync(new SheetAccess
+                    {
+                        SheetId = sheetId,
+                        RoleId = roleId
+                    });
+                    db.SaveChanges();
+                }
+                catch
+                {
+                    return false;
+                }
             }
-        }
-
-        /// <summary>
-        /// Sees if there is already an entry in the providers table.
-        /// </summary>
-        public static async Task<bool> ProviderExistsAsync()
-        {
-            using (StatsContext db = new StatsContext())
-            {
-                return await db.Providers.AnyAsync();
-            }
+            return true;
         }
     }
 }
