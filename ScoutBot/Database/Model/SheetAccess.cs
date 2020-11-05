@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ScoutBot.Database.Model
 {
@@ -8,19 +9,21 @@ namespace ScoutBot.Database.Model
     public class SheetAccess
     {
         /// <summary>
-        /// The discord role id.
+        /// The primary key.
         /// </summary>
         [Key]
+        public int SheetAccessId { get; set; }
+
+        /// <summary>
+        /// The discord role id.
+        /// </summary>
         public ulong RoleId { get; set; }
 
         /// <summary>
-        /// The google sheet id.
+        /// Forign key to the google sheet id.
         /// </summary>
-        public string SheetId { get; set; }
-
-        /// <summary>
-        /// The name of the team that will be using the scout sheet.
-        /// </summary>
-        public string TeamName { get; set; }
+        [ForeignKey("Sheets")]
+        public int SheetId { get; set; }
+        public Sheets Sheet { get; set; }
     }
 }

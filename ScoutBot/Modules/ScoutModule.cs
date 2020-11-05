@@ -3,6 +3,8 @@ using Discord.Commands;
 using RiotSharp;
 using RiotSharp.Misc;
 using ScoutBot.Services;
+using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ScoutBot.Modules
@@ -29,9 +31,11 @@ namespace ScoutBot.Modules
         [RequireUserPermissionAttribute(GuildPermission.Administrator)]
         [Command("Register")]
         [Summary("Links a google sheet with a discord role.")]
-        public async Task RegisterSheetAsync(string sheetId, ulong roleId, [Remainder] string teamName)
+        public async Task RegisterSheetAsync(string sheetId, string roleId, [Remainder] string teamName)
         {
-            if (await DatabaseService.AddSheetAccess(sheetId, roleId, teamName))
+            string pattern = @"\d+"; //Get all digits from role
+            roleId = Regex.Match(roleId, pattern).ToString();
+            if (await DatabaseService.AddSheetAccess(sheetId, Convert.ToUInt64(roleId), teamName))
                 await ReplyAsync("Success!");
             else
                 await ReplyAsync("There was an error. The data was not saved.");

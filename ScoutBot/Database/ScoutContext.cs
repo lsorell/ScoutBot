@@ -12,6 +12,7 @@ namespace ScoutBot.Services
         /// The database tables.
         /// </summary>
         public DbSet<SheetAccess> SheetAccess { get; set; }
+        public DbSet<Sheets> Sheets { get; set; }
 
         /// <summary>
         /// Configures database to use sqlite.
@@ -20,18 +21,6 @@ namespace ScoutBot.Services
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseSqlite(@"Data Source=..\ScoutBot.db");
-        }
-
-        /// <summary>
-        /// Sets attributes of database when model is being created.
-        /// </summary>
-        /// <param name="modelBuilder"></param>
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<SheetAccess>(entity =>
-            {
-                entity.HasIndex(e => e.TeamName).IsUnique();
-            });
         }
     }
 }
