@@ -12,6 +12,7 @@ namespace ScoutBot.Database.Model
         /// The primary key.
         /// </summary>
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SheetAccessId { get; set; }
 
         /// <summary>

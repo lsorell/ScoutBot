@@ -10,22 +10,21 @@ namespace ScoutBot.Services
     public class DatabaseService
     {
         /// <summary>
-        /// Adds new SheetAccess row to the table.
+        /// Adds a sheet to the sheets table.
         /// </summary>
-        /// <param name="sheetId">The google sheet id.</param>
-        /// <param name="roleId">The discord role id.</param>
+        /// <param name="googleId">The id of the google sheet.</param>
+        /// <param name="name">The common name for the document.</param>
         /// <returns></returns>
-        public static async Task<bool> AddSheetAccess(string sheetId, ulong roleId, string teamName)
+        public static async Task<bool> AddSheet(string googleId, string name)
         {
             using (ScoutContext db = new ScoutContext())
             {
                 try
                 {
-                    await db.SheetAccess.AddAsync(new SheetAccess
+                    await db.Sheets.AddAsync(new Sheets
                     {
-                        SheetId = sheetId,
-                        RoleId = roleId,
-                        TeamName = teamName
+                        GoogleId = googleId,
+                        Name = name
                     });
                     db.SaveChanges();
                 }
@@ -34,6 +33,7 @@ namespace ScoutBot.Services
                     return false;
                 }
             }
+
             return true;
         }
     }

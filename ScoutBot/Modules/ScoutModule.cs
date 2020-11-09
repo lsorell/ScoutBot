@@ -29,13 +29,13 @@ namespace ScoutBot.Modules
         }
 
         [RequireUserPermissionAttribute(GuildPermission.Administrator)]
-        [Command("Register")]
-        [Summary("Links a google sheet with a discord role.")]
-        public async Task RegisterSheetAsync(string sheetId, string roleId, [Remainder] string teamName)
+        [Command("AddSheet")]
+        [Summary("Adds a google sheet with a common name to the database.")]
+        public async Task AddSheetAsync(string googleId, [Remainder] string name)
         {
-            string pattern = @"\d+"; //Get all digits from role
-            roleId = Regex.Match(roleId, pattern).ToString();
-            if (await DatabaseService.AddSheetAccess(sheetId, Convert.ToUInt64(roleId), teamName))
+            string pattern = @"/spreadsheets/d/([a-zA-Z0-9-_]+)";
+            googleId = Regex.Match(googleId, pattern).ToString();
+            if (await DatabaseService.AddSheet(googleId.Substring(new string("/spreadsheets/d/").Length), name))
                 await ReplyAsync("Success!");
             else
                 await ReplyAsync("There was an error. The data was not saved.");

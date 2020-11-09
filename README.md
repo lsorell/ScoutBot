@@ -15,21 +15,24 @@ ScoutBot is a discord bot that creates scout sheets, using google sheets, on opp
 
 ## Commands
 
-- [RegisterSheet](#Register-<SheetId\>-<RoleId\>-<TeamName\>)
+- [RegisterSheet](#Register-<SheetUrl\>-<Name\>)
 
 #
 
-### Register <SheetId\> <RoleId\> <TeamName\>
+### AddSheet <SheetUrl\> <Name\>
 
-Links an existing google sheet with a RotM team name.
+Saves a google sheet to the database.
 
 #### Parameters
 
-| Param    | Description                                                           |
-| -------- | --------------------------------------------------------------------- |
-| SheetId  | The google id of the document.                                        |
-| RoleId   | The id of the role that will be allowed to access the sheet.          |
-| TeamName | The name of the team that will be using the scout sheet.              |
+| Param    | Description                                          |
+| -------- | -----------------------------------------------------|
+| SheetUrl | The url of the google sheet.                         |
+| Name     | A common name for the sheet. (i.e. Gold Fall 2020)   |
+
+### GiveAccess
+
+Prompts user for what sheet to give what role(s) access to.
 
 ---
 
