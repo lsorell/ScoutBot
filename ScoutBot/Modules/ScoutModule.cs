@@ -39,10 +39,7 @@ namespace ScoutBot.Modules
         {
             string pattern = @"/spreadsheets/d/([a-zA-Z0-9-_]+)";
             googleId = Regex.Match(googleId, pattern).ToString();
-            if (await DatabaseService.AddSheetAsync(googleId.Substring(new string("/spreadsheets/d/").Length), name))
-                await ReplyAsync("Success!");
-            else
-                await ReplyAsync("There was an error. The data was not saved.");
+            await ReplyResultAsync(await DatabaseService.AddSheetAsync(googleId.Substring(new string("/spreadsheets/d/").Length), name));
         }
 
         [RequireUserPermissionAttribute(GuildPermission.Administrator)]
@@ -51,49 +48,27 @@ namespace ScoutBot.Modules
         public async Task GiveAccessAsync()
         {
             List<string> sheets = await DatabaseService.GetSheetNamesAsync();
-            StringBuilder sb = new StringBuilder("What sheet do you want to give access rights to?\n");
-            for (int i = 0; i < sheets.Count; i++)
-            {
-                sb.AppendLine(string.Format("{0}. {1}", i + 1, sheets[i]));
-            }
-            await ReplyAsync(sb.ToString());
+            await ReplyAsync(ScoutModuleHelper.ListSheets(sheets));
+
             SocketMessage selectionMsg = await NextMessageAsync();
             string selection = null;
-            if (selectionMsg != null)
-            {
-                try
-                {
-                    selection = sheets[Convert.ToInt32(selectionMsg.Content[0].ToString()) - 1];
-                    await ReplyAsync(string.Format("List the roles you want to give access to sheet {0} seperated by spaces. (i.e. @Gold @Platinum @Diamond, etc...)", selection));
-                }
-                catch
-                {
-                    await ReplyAsync("Invalid selection.");
-                    return;
-                }
-            }
-            SocketMessage rolesMsg = await NextMessageAsync();
-            ulong[] roleIds = null;
-            if (rolesMsg != null)
-            {
-                try
-                {
-                    string[] roles = rolesMsg.Content.Split(' ');
-                    roleIds = new ulong[roles.Length];
-                    string pattern = @"\d+";
-                    for (int i = 0; i < roles.Length; i++)
-                    {
-                        roleIds[i] = Convert.ToUInt64(Regex.Match(roles[i], pattern).ToString());
-                    }
-                }
-                catch
-                {
-                    await ReplyAsync("Roles not formatted correctly.");
-                    return;
-                }
+            await ReplyAsync(ScoutModuleHelper.PromptForRoles(sheets, selectionMsg, out selection));
+            if (selection == null)
+                return;
 
+            ulong[] roleIds = ScoutModuleHelper.GetRoleIds(await NextMessageAsync());
+            if (roleIds == null)
+            {
+                await ReplyAsync("Roles not formatted correctly.");
+                return;
             }
-            if (await DatabaseService.AddSheetAccessAsync(roleIds, selection))
+
+            await ReplyResultAsync(await DatabaseService.AddSheetAccessAsync(roleIds, selection));
+        }
+
+        private async Task ReplyResultAsync(bool result)
+        {
+            if (result)
                 await ReplyAsync("Success!");
             else
                 await ReplyAsync("There was an error. The data was not saved.");

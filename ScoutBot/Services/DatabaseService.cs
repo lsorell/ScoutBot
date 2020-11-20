@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
 using ScoutBot.Database.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace ScoutBot.Services
                     });
                     db.SaveChanges();
                 }
-                catch
+                catch (DbUpdateException)
                 {
                     return false;
                 }
@@ -60,7 +60,7 @@ namespace ScoutBot.Services
                     }
                     await db.SaveChangesAsync();
                 }
-                catch
+                catch (DbUpdateException)
                 {
                     return false;
                 }
