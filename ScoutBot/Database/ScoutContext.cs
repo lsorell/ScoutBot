@@ -36,6 +36,10 @@ namespace ScoutBot.Services
             builder.Entity<Sheets>()
                 .HasIndex(s => s.Name)
                 .IsUnique(true);
+
+            builder.Entity<SheetAccess>()
+                .HasIndex(sa => new { sa.RoleId, sa.SheetId })
+                .IsUnique(true);
         }
     }
 }

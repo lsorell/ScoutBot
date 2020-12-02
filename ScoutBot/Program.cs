@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
+using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -47,8 +48,8 @@ namespace ScoutBot
             JsonConvert.DeserializeObject<Config>(File.ReadAllText(path));
 
             // Subscribe the logging handler to both the client and the CommandService.
-            _client.Log += Log;
-            _commands.Log += Log;
+            _client.Log += LogAsync;
+            _commands.Log += LogAsync;
 
             // Setup your DI container.
             _services = ConfigureServices();
@@ -56,7 +57,7 @@ namespace ScoutBot
 
         // Example of a logging handler. This can be re-used by addons
         // that ask for a Func<LogMessage, Task>.
-        private static Task Log(LogMessage message)
+        private static Task LogAsync(LogMessage message)
         {
             switch (message.Severity)
             {
@@ -98,7 +99,8 @@ namespace ScoutBot
             var map = new ServiceCollection()
                 // Repeat this for all the service classes
                 // and other dependencies that your commands might need.
-                .AddSingleton<DatabaseService>();
+                .AddSingleton<DatabaseService>()
+                .AddSingleton(new InteractiveService(_client));
 
             // When all your required services are in the collection, build the container.
             // Tip: There's an overload taking in a 'validateScopes' bool to make sure
