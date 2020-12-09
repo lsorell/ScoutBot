@@ -39,6 +39,12 @@ namespace ScoutBot.Services
             return true;
         }
 
+        /// <summary>
+        /// Adds a sheet access object to the database.
+        /// </summary>
+        /// <param name="roles">The roleId's to add.</param>
+        /// <param name="name">The name of the sheet to give access to.</param>
+        /// <returns>Bool reflecting if the changes went through.</returns>
         public static async Task<bool> AddSheetAccessAsync(ulong[] roles, string name)
         {
             using (ScoutContext db = new ScoutContext())
@@ -70,7 +76,7 @@ namespace ScoutBot.Services
         }
 
         /// <summary>
-        /// Gets all the common sheet names from the sheets table.
+        /// Gets all the common sheet names from the Sheets table.
         /// </summary>
         /// <returns>A list of all sheet names.</returns>
         public static async Task<List<string>> GetSheetNamesAsync()
@@ -82,6 +88,40 @@ namespace ScoutBot.Services
                     .Select(s => s.Name)
                     .ToListAsync<string>();
             }
+        }
+
+        /// <summary>
+        /// Gets a list of all RoleIds in the SheetAccess table.
+        /// </summary>
+        /// <returns>A list of all roles.</returns>
+        public static async Task<List<SheetAccess>> GetAccessibleSheetsAsync(List<ulong> roles)
+        {
+            List<SheetAccess> sheets = new List<SheetAccess>();
+            using (ScoutContext db = new ScoutContext())
+            {
+                foreach (ulong role in roles)
+                {
+                    sheets.AddRange(await db.SheetAccess
+                        .Include(sa => sa.Sheet)
+                        .AsAsyncEnumerable()
+                        .Where(sa => sa.RoleId == role)
+                        .ToListAsync<SheetAccess>());
+                }
+            }
+            // Remove duplicate sheetIds
+            HashSet<int> seen = new HashSet<int>();
+            foreach (SheetAccess sa in sheets.ToList())
+            {
+                if (seen.Contains(sa.SheetId))
+                {
+                    sheets.Remove(sa);
+                }
+                else
+                {
+                    seen.Add(sa.SheetId);
+                }
+            }
+            return sheets;
         }
     }
 }
