@@ -99,7 +99,6 @@ namespace ScoutBot
             var map = new ServiceCollection()
                 // Repeat this for all the service classes
                 // and other dependencies that your commands might need.
-                .AddSingleton<DatabaseService>()
                 .AddSingleton(new InteractiveService(_client));
 
             // When all your required services are in the collection, build the container.
@@ -117,6 +116,8 @@ namespace ScoutBot
             // Login and connect.
             await _client.LoginAsync(TokenType.Bot, Config.DiscordToken);
             await _client.StartAsync();
+
+            GoogleService.Initialize();
 
             // Wait infinitely so the bot stays connected.
             await Task.Delay(Timeout.Infinite);

@@ -1,15 +1,9 @@
-using Discord;
-using Discord.Addons.Interactive;
-using Discord.Commands;
 using Discord.WebSocket;
-using RiotSharp;
-using RiotSharp.Misc;
-using ScoutBot.Services;
+using ScoutBot.Database.Model;
 using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ScoutBot.Modules
 {
@@ -19,16 +13,23 @@ namespace ScoutBot.Modules
     public static class ScoutModuleHelper
     {
         /// <summary>
-        /// Builds a list of sheet names.
+        /// Formats a string to list objects with a number after a prompt.
+        /// Example:
+        ///     What color is your favorite?
+        ///     1. Red
+        ///     2. Orange
+        ///     3. Blue
         /// </summary>
-        /// <param name="sheets">The sheet names.</param>
-        /// <returns>A list of sheet names.</returns>
-        public static string ListSheets(List<string> sheets)
+        /// <param name="prompt">The question to ask.</param>
+        /// <param name="list">The list of options.</param>
+        /// <returns></returns>
+        public static string FormatListPrompt(string prompt, List<string> list)
         {
-            StringBuilder sb = new StringBuilder("What sheet do you want to give access rights to?\n");
-            for (int i = 0; i < sheets.Count; i++)
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(prompt);
+            for (int i = 0; i < list.Count; i++)
             {
-                sb.AppendLine(string.Format("{0}. {1}", i + 1, sheets[i]));
+                sb.AppendLine(string.Format("{0}. {1}", i + 1, list[i]));
             }
             return sb.ToString();
         }
@@ -47,7 +48,7 @@ namespace ScoutBot.Modules
             {
                 try
                 {
-                    selection = sheets[Convert.ToInt32(message.Content[0].ToString()) - 1];
+                    selection = sheets[Convert.ToInt32(message.Content.Trim()) - 1];
                     return string.Format("List the roles you want to give access to sheet {0} seperated by spaces. (i.e. @Gold @Platinum @Diamond, etc...)", selection);
                 }
                 catch
@@ -84,6 +85,51 @@ namespace ScoutBot.Modules
                 }
             }
             return roleIds;
+        }
+
+        /// <summary>
+        /// Makes a list based on user roles.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns>A list of roles.</returns>
+        public static List<ulong> CreateListOfRoles(SocketGuildUser user)
+        {
+            List<ulong> roles = new List<ulong>();
+            foreach (SocketRole role in user.Roles)
+            {
+                roles.Add(role.Id);
+            }
+            return roles;
+        }
+
+        /// <summary>
+        /// Creates a response based on the spreadsheets the user has access to.
+        /// </summary>
+        /// <param name="spreadsheets">The spreadsheets the user has access to.</param>
+        /// <param name="googleId">The google id of the spreadsheet.</param>
+        /// <returns></returns>
+        public static string SheetAccessResponse(List<SheetAccess> spreadsheets, out string googleId)
+        {
+            googleId = null;
+            if (spreadsheets.Count == 0)
+            {
+                return "You don't have access to any sheets. Ask an admin to give your role access.";
+            }
+            else if (spreadsheets.Count > 1)
+            {
+                List<string> names = new List<string>();
+                foreach (SheetAccess sheet in spreadsheets)
+                {
+                    names.Add(sheet.Sheet.Name);
+                }
+                googleId = "";
+                return FormatListPrompt("What file do you want to add this to?", names);
+            }
+            else
+            {
+                googleId = spreadsheets[0].Sheet.GoogleId;
+                return null;
+            }
         }
     }
 }

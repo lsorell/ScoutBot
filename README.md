@@ -16,6 +16,7 @@ ScoutBot is a discord bot that creates scout sheets, using google sheets, on opp
 ## Commands
 
 - [RegisterSheet](#Register-<SheetUrl\>-<Name\>)
+- [GiveAccess](#GiveAccess)
 
 #
 
