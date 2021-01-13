@@ -37,7 +37,9 @@ namespace ScoutBot.Modules
         {
             string pattern = @"/spreadsheets/d/([a-zA-Z0-9-_]+)";
             googleId = Regex.Match(googleId, pattern).ToString();
-            await ReplyResultAsync(await DatabaseService.AddSheetAsync(googleId.Substring(new string("/spreadsheets/d/").Length), name), "The database had an issue. The data was not saved.");
+            await ReplyResultAsync(
+                await DatabaseService.AddSheetAsync(googleId.Substring(new string("/spreadsheets/d/").Length), name),
+                "The database had an issue. The data was not saved.");
         }
 
         [RequireUserPermissionAttribute(GuildPermission.Administrator)]
@@ -61,7 +63,9 @@ namespace ScoutBot.Modules
                 return;
             }
 
-            await ReplyResultAsync(await DatabaseService.AddSheetAccessAsync(roleIds, selection), "The database had an issue. The data was not saved.");
+            await ReplyResultAsync(
+                await DatabaseService.AddSheetAccessAsync(roleIds, selection),
+                "The database had an issue. The data was not saved.");
         }
 
         [Command("NewScout", RunMode = RunMode.Async)]
@@ -82,6 +86,7 @@ namespace ScoutBot.Modules
                 SocketMessage selectionMsg = await NextMessageAsync();
                 try
                 {
+                    // Gets the selected google spreadsheet id from the list
                     googleId = spreadsheets[Convert.ToInt32(selectionMsg.Content.Trim()) - 1].Sheet.GoogleId;
                 }
                 catch
