@@ -117,68 +117,22 @@ namespace ScoutBot.Services
         /// <param name="teamName">The team's name.</param>
         private static async Task AddNewScoutSheetDataAsync(string spreadsheetId, int? sheetId, string opgg, string teamName)
         {
-            UpdateCellsRequest updateCellsRequest = new UpdateCellsRequest
-            {
-                Start = new GridCoordinate
-                {
-                    SheetId = sheetId,
-                    ColumnIndex = 0,
-                    RowIndex = 0
-                },
-                Fields = "*"
-            };
-            updateCellsRequest.Rows = new List<RowData>();
-            // Row 1
-            RowData row1 = new RowData();
-            row1.Values = new List<CellData>();
-            CellData a1 = new CellData
-            {
-                UserEnteredValue = new ExtendedValue
-                {
-                    StringValue = teamName.ToUpper()
-                },
-                UserEnteredFormat = new CellFormat
-                {
-                    TextFormat = new TextFormat
-                    {
-                        Bold = true,
-                        FontSize = 18
-                    }
-                }
-            };
-            row1.Values.Add(a1);
-            updateCellsRequest.Rows.Add(row1);
-            // Row 2
-            RowData row2 = new RowData();
-            row2.Values = new List<CellData>();
-            CellData a2 = new CellData
-            {
-                UserEnteredValue = new ExtendedValue
-                {
-                    StringValue = "OP.GG:"
-                },
-                UserEnteredFormat = new CellFormat
-                {
-                    HorizontalAlignment = "Right"
-                }
-            };
-            row2.Values.Add(a2);
-            CellData b2 = new CellData
-            {
-                UserEnteredValue = new ExtendedValue
-                {
-                    StringValue = opgg
-                }
-            };
-            row2.Values.Add(b2);
-            updateCellsRequest.Rows.Add(row2);
+            List<List<GoogleCell>> rows = new List<List<GoogleCell>>();
 
-            BatchUpdateSpreadsheetRequest batchRequest = new BatchUpdateSpreadsheetRequest();
-            batchRequest.Requests = new List<Request> {
-                new Request {
-                    UpdateCells = updateCellsRequest
-                }
-            };
+            // Row 1
+            List<GoogleCell> row1 = new List<GoogleCell>();
+            GoogleCell a1 = new GoogleCell(teamName.ToUpper(), true, 18);
+            row1.Add(a1);
+            rows.Add(row1);
+
+            List<GoogleCell> row2 = new List<GoogleCell>();
+            GoogleCell a2 = new GoogleCell("OP.GG:", TextAlignment.Right);
+            GoogleCell b2 = new GoogleCell(opgg);
+            row2.Add(a2);
+            row2.Add(b2);
+            rows.Add(row2);
+
+            BatchUpdateSpreadsheetRequest batchRequest = GoogleServiceHelper.UpdateCellsHelper(rows, sheetId, 0, 0);
             SpreadsheetsResource.BatchUpdateRequest requests = _service.Spreadsheets.BatchUpdate(batchRequest, spreadsheetId);
             await requests.ExecuteAsync();
         }
