@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace ScoutBot.Modules
 {
     /// <summary>
-    /// Helper class to reduce method length in ScoutModule.cs
+    /// Helper class that handles the asynchronus processing of ScoutBot commands.
     /// </summary>
     public static class ScoutModuleHelper
     {
@@ -107,7 +107,7 @@ namespace ScoutBot.Modules
         /// </summary>
         /// <param name="spreadsheets">The spreadsheets the user has access to.</param>
         /// <param name="googleId">The google id of the spreadsheet.</param>
-        /// <returns></returns>
+        /// <returns>The message to send back to the user.</returns>
         public static string SheetAccessResponse(List<SheetAccess> spreadsheets, out string googleId)
         {
             googleId = null;
@@ -130,6 +130,49 @@ namespace ScoutBot.Modules
                 googleId = spreadsheets[0].Sheet.GoogleId;
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Gets the team id or prompts the user for more information.
+        /// </summary>
+        /// <param name="teams">A list of teams.</param>
+        /// <param name="teamId">The teamId of the team.</param>
+        /// <returns>The message to send back to the user.</returns>
+        public static string TeamsResponse(List<Teams> teams, out int teamId)
+        {
+            teamId = -1;
+            if (teams.Count == 0)
+            {
+                return "There are no teams in the database. Try adding one via the NewScout command.";
+            }
+            else if (teams.Count > 1)
+            {
+                List<string> names = new List<string>();
+                foreach (Teams team in teams)
+                {
+                    names.Add(team.Name);
+                }
+                teamId = 0;
+                return FormatListPrompt("What team are you scouting?", names);
+            }
+            else
+            {
+                teamId = teams[0].TeamId;
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Checks that the result string input is valid from the ScoutGame command.
+        /// </summary>
+        /// <param name="result">The result string (win/loss).</param>
+        public static char CheckResultInput(string result)
+        {
+            char letter = result.Trim().ToLower()[0];
+            if (letter == 'w' || letter == 'l')
+                return letter;
+
+            return Char.MinValue;
         }
     }
 }

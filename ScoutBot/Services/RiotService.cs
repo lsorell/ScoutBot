@@ -1,4 +1,5 @@
 using RiotSharp;
+using RiotSharp.Endpoints.MatchEndpoint;
 using RiotSharp.Misc;
 using System;
 using System.IO;
@@ -11,35 +12,13 @@ namespace ScoutBot.Services
     public class RiotService
     {
         /// <summary>
-        /// Uses tournament stub api.
-        /// </summary>
-        private static bool _useStub = true;
-
-        /// <summary>
         /// The tournament api instance.
         /// </summary>
-        private static TournamentRiotApi _api = TournamentRiotApi.GetInstance(Config.RiotAPIKey, useStub: _useStub);
+        private static RiotApi _api = RiotApi.GetDevelopmentInstance(Config.RiotAPIKey);
 
-        /// <summary>
-        /// The url for Riot to post completed games.
-        /// </summary>
-        private static string _resultUrl = "https://www.google.com/"; //TODO: Create endpoint for riot to hit
-
-        /// <summary>
-        /// Gets a provider for creating tournaments.
-        /// </summary>
-        /// <returns>The providerID.</returns>
-        public static async Task<int> GetProviderAsync()
+        public static async Task<Match> GetMatchDetailAsync(long matchId)
         {
-            try
-            {
-                int provider = await _api.CreateProviderAsync(Region.Na, _resultUrl);
-                return provider;
-            }
-            catch (RiotSharpException)
-            {
-                throw;
-            }
+            return await _api.Match.GetMatchAsync(Region.Na, matchId);
         }
     }
 }
