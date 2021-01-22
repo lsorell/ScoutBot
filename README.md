@@ -42,7 +42,7 @@ Prompts user for what sheet to give what role(s) access to.
 ## Commands
 
 - [NewScout](#NewScout-<Op.gg\>-<TeamName\>)
-- [ScoutGame](#ScoutGame-<SideOrResult\>-<MatchHistory\>)
+- [ScoutGame](#ScoutGame-<Result\>-<MatchHistory\>)
 - [SaveGame](#SaveGame-<MatchHistory\>)
 - [Undo](#Undo)
 
@@ -61,7 +61,7 @@ Creates a new worksheet for scouting with the enemy team name and op.gg link.
 
 ---
 
-### ScoutGame <SideOrResult\> <MatchHistory\>
+### ScoutGame <Result\> <MatchHistory\>
 
 Incorperates the game data into the scout spreadsheet for the most recently accessed team.
 
@@ -69,7 +69,7 @@ Incorperates the game data into the scout spreadsheet for the most recently acce
 
 | Param        | Description                                                           |
 | ------------ | --------------------------------------------------------------------- |
-| SideOrResult | The side (red/blue) or the result (win/loss) of the scouted team.     |
+| Result       | The result (win/loss) of the scouted team.                            |
 | MatchHistory | A match history link.                                                 |
 
 ---

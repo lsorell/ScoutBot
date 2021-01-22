@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RiotSharp.Endpoints.MatchEndpoint;
 using ScoutBot.Database.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace ScoutBot.Services
         /// </summary>
         /// <param name="googleId">The id of the google sheet.</param>
         /// <param name="name">The common name for the document.</param>
-        /// <returns></returns>
+        /// <returns>Bool reflecting if the changes went through.</returns>
         public static async Task<bool> AddSheetAsync(string googleId, string name)
         {
             using (ScoutContext db = new ScoutContext())
@@ -30,12 +32,12 @@ namespace ScoutBot.Services
                     });
                     db.SaveChanges();
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException e)
                 {
+                    Console.WriteLine(e.Message + "\n" + e.InnerException);
                     return false;
                 }
             }
-
             return true;
         }
 
@@ -66,13 +68,76 @@ namespace ScoutBot.Services
                     }
                     await db.SaveChangesAsync();
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException e)
                 {
+                    Console.WriteLine(e.Message + "\n" + e.InnerException);
                     return false;
                 }
-
-                return true;
             }
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a team to the database.
+        /// </summary>
+        /// <param name="name">The name of the team.</param>
+        /// <param name="googleId">The google sheetId to match on.</param>
+        /// <returns>Bool reflecting if the changes went through.</returns>
+        public static async Task<bool> AddTeamAsync(string name, string googleId)
+        {
+            using (ScoutContext db = new ScoutContext())
+            {
+                try
+                {
+                    Sheets sheet = await db.Sheets
+                                        .AsAsyncEnumerable()
+                                        .Where(s => s.GoogleId == googleId)
+                                        .FirstAsync<Sheets>();
+
+                    db.Teams.Add(new Teams
+                    {
+                        Name = name,
+                        SheetId = sheet.SheetId
+                    });
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateException e)
+                {
+                    Console.WriteLine(e.Message + "\n" + e.InnerException);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a match to the matches table.
+        /// </summary>
+        /// <param name="result">The result of the team being scouted (w/l).</param>
+        /// <param name="teamId">The id of the team being scouted.</param>
+        /// <param name="match">The match to add.</param>
+        /// <returns>Bool reflecting if the changes went through.</returns>
+        public static async Task<bool> AddMatchAsync(char result, int teamId, Match match)
+        {
+            using (ScoutContext db = new ScoutContext())
+            {
+                try
+                {
+                    db.Matches.Add(new Matches
+                    {
+                        Result = result,
+                        TeamId = teamId,
+                        Match = match
+                    });
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateException e)
+                {
+                    Console.WriteLine(e.Message + "\n" + e.InnerException);
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>
@@ -102,10 +167,10 @@ namespace ScoutBot.Services
                 foreach (ulong role in roles)
                 {
                     sheets.AddRange(await db.SheetAccess
-                        .Include(sa => sa.Sheet)
-                        .AsAsyncEnumerable()
-                        .Where(sa => sa.RoleId == role)
-                        .ToListAsync<SheetAccess>());
+                                        .Include(sa => sa.Sheet)
+                                        .AsAsyncEnumerable()
+                                        .Where(sa => sa.RoleId == role)
+                                        .ToListAsync<SheetAccess>());
                 }
             }
             // Remove duplicate sheetIds
@@ -122,6 +187,29 @@ namespace ScoutBot.Services
                 }
             }
             return sheets;
+        }
+
+        /// <summary>
+        /// Gets all the teams on the same google sheet.
+        /// </summary>
+        /// <param name="googleId">The googleId of the sheet.</param>
+        /// <returns>A list of teams with a matching google Id.</returns>
+        public static async Task<List<Teams>> GetAllTeamsOnSheetAsync(string googleId)
+        {
+            List<Teams> teams = new List<Teams>();
+            using (ScoutContext db = new ScoutContext())
+            {
+                Sheets sheet = await db.Sheets
+                                    .AsAsyncEnumerable()
+                                    .Where(s => s.GoogleId == googleId)
+                                    .FirstAsync<Sheets>();
+
+                teams.AddRange(await db.Teams
+                                    .AsAsyncEnumerable()
+                                    .Where(t => t.SheetId == sheet.SheetId)
+                                    .ToListAsync<Teams>());
+            }
+            return teams;
         }
     }
 }

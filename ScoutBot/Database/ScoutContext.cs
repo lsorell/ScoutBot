@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RiotSharp.Endpoints.MatchEndpoint;
 using ScoutBot.Database.Model;
 
 namespace ScoutBot.Services
@@ -13,6 +14,8 @@ namespace ScoutBot.Services
         /// </summary>
         public DbSet<SheetAccess> SheetAccess { get; set; }
         public DbSet<Sheets> Sheets { get; set; }
+        public DbSet<Teams> Teams { get; set; }
+        public DbSet<Matches> Matches { get; set; }
 
         /// <summary>
         /// Configures database to use sqlite.
@@ -29,6 +32,7 @@ namespace ScoutBot.Services
         /// <param name="builder"></param>
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // ScoutBot Tables
             builder.Entity<Sheets>()
                 .HasIndex(s => s.GoogleId)
                 .IsUnique(true);
@@ -40,6 +44,30 @@ namespace ScoutBot.Services
             builder.Entity<SheetAccess>()
                 .HasIndex(sa => new { sa.RoleId, sa.SheetId })
                 .IsUnique(true);
+
+            builder.Entity<Teams>()
+                .HasIndex(t => new { t.Name, t.SheetId })
+                .IsUnique(true);
+
+            // Riot Api Tables
+            builder.Ignore<Mastery>();
+            builder.Ignore<Rune>();
+
+            // Ignore these dictionaries, ef does not map them.
+            builder.Entity<ParticipantTimeline>()
+                .Ignore(pt => pt.GoldPerMinDeltas);
+            builder.Entity<ParticipantTimeline>()
+                .Ignore(pt => pt.XpDiffPerMinDeltas);
+            builder.Entity<ParticipantTimeline>()
+                .Ignore(pt => pt.XpPerMinDeltas);
+            builder.Entity<ParticipantTimeline>()
+                .Ignore(pt => pt.CsDiffPerMinDeltas);
+            builder.Entity<ParticipantTimeline>()
+                .Ignore(pt => pt.CreepsPerMinDeltas);
+            builder.Entity<ParticipantTimeline>()
+                .Ignore(pt => pt.DamageTakenDiffPerMinDeltas);
+            builder.Entity<ParticipantTimeline>()
+                .Ignore(pt => pt.DamageTakenPerMinDeltas);
         }
     }
 }
